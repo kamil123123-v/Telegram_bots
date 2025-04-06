@@ -1,0 +1,28 @@
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters.command import Command
+from api_token import TOKEN
+from aiogram.enums import ParseMode # Добовляем функции для форматирования текста
+from aiogram import F # Функция чтобы форматирование текста было только в кнкретной функции
+
+bot = Bot(TOKEN)
+dp = Dispatcher()
+
+
+@dp.message(Command('start'))
+async def start_command(message: types.Message):
+    await message.answer('Привет я бот')
+
+
+@dp.message(F.text, Command('text')) # Фокусируем изменение текста в данной команде
+async def text_command(message: types.Message):
+    await message.answer('<i> Cursive</i>', parse_mode= ParseMode.HTML) # Пишем сообшение курсивом используя <i></i> а потом указазываем каким способом форматируем список
+
+
+async def main():
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
