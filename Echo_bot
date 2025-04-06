@@ -1,0 +1,28 @@
+import asyncio # добавление библиотеки для асинхрогошо ответа
+from aiogram import Bot, Dispatcher, types # Добавление функций для работы с ботом
+from aiogram.filters.command import Command # Добавление функций для реагирование на команды
+from api_token import TOKEN # Добавление токена из другой папки
+
+bot = Bot(TOKEN)
+dp = Dispatcher()
+
+# Команда старт и ответ на сообшение пользователя
+@dp.message(Command('start')) 
+async def start_comman(message: types.message):
+    await message.reply('Привет меня зовут echo_bot')
+
+# Данная команда будет реагировать на все сообшения которые не относятся к командам
+@dp.message()
+async def echo_command(message: types.message):
+    await message.answer(message.text)
+
+# Главная функция даюшая программее работать 
+async def main():
+    # он отвечает только на пследнюю команду которая была написсана пользователем и не обрашает внимание на предыдушие, если поставить False то он начнет реагировать и на все предыдушие
+    await bot.delete_webhook(drop_pending_updates=True)
+    # Начинает постояно проверять на запросы у бота
+    await dp.start_polling(bot)
+
+# Запуск программы
+if __name__ == '__main__':
+    asyncio.run(main())
