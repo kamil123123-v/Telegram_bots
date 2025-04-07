@@ -1,0 +1,47 @@
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters.command import Command
+from api_token import TOKEN
+from aiogram.types import FSInputFile,URLInputFile, BufferedInputFile # добовляем нужные функции для того чтобы различными способами открывать фото
+
+
+
+bot = Bot(TOKEN)
+dp = Dispatcher()
+
+
+@dp.message(Command('start'))
+async def start_command(message: types.Message):
+    await message.answer('Привет я бот')
+
+
+@dp.message(Command('image_FS'))
+async def FS_command(message: types.Message):
+    my_image = FSInputFile('1.png')# в данном случае мы берем фото с компютера
+    await message.answer_photo(my_image, caption='Красивое изображение')
+
+
+@dp.message(Command('image_URL'))
+async def URL_command(message: types.Message):
+    my_image_URL = URLInputFile('https://cdn.culture.ru/images/69b64b45-dc21-5230-951c-9722db631cd0') #в данном случае мы находим фото в интернете по сылке
+    await message.answer_photo(my_image_URL, caption='Красивое изображение')
+
+
+@dp.message(Command('image_BUF'))
+async def BUF_command(message: types.Message):
+    with open('1.png', 'rb') as my_image: # в данном случае мы используем бинарное считывание чтобы использовать фото
+        await message.answer_photo(BufferedInputFile(my_image.read(), filename='my_image'), caption='Красивое изображение')
+
+
+@dp.message()
+async def start_command(message: types.Message):
+    await message.answer('Я не понимаю что ты от меня хочешь')
+
+
+async def main():
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
