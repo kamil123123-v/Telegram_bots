@@ -1,0 +1,38 @@
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters.command import Command
+from api_token import TOKEN
+from aiogram.types import FSInputFile
+from aiogram.utils.media_group import MediaGroupBuilder # Данная библиотека помогает отправлять медиогруппу состояшую из фото или видео
+
+
+
+bot = Bot(TOKEN)
+dp = Dispatcher()
+
+
+@dp.message(Command('start'))
+async def start_command(message: types.Message):
+    await message.answer('Привет я бот')
+
+
+@dp.message(Command('group'))
+async def group_command(message: types.Message):
+    media = MediaGroupBuilder(caption='Это медиагруппа')# мы создаем функцию медиагруппы и пишем ей коментарий
+    media.add_photo(FSInputFile('1.png')) # добовляем фото
+    media.add_video(FSInputFile('IMG_9718.MP4'))# Добовляем видео
+    await message.answer_media_group(media=media.build()) # Выводим
+
+
+@dp.message()
+async def else_command(message: types.Message):
+    await message.answer('Я не понимаю что ты от меня хочешь')
+
+
+async def main():
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
