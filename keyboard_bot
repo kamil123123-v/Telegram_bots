@@ -1,0 +1,40 @@
+import asyncio
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters.command import Command
+from api_token import TOKEN
+from aiogram.types import FSInputFile, KeyboardButton,ReplyKeyboardMarkup
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
+
+
+
+
+
+bot = Bot(TOKEN)
+dp = Dispatcher()
+
+
+@dp.message(Command('start'))
+async def start_command(message: types.Message):
+    kb = [
+        [KeyboardButton(text='Привет')],
+        [KeyboardButton(text='Привет, бот')]
+    ]
+    keyboard = ReplyKeyboardMarkup(keyboard=kb, input_field_placeholder='Выберите приветствие', resize_keyboard=True)
+    await message.answer('Привет я бот',reply_markup=keyboard)
+
+
+
+
+
+@dp.message()
+async def else_command(message: types.Message):
+    await message.answer('Я не понимаю что ты от меня хочешь')
+
+
+async def main():
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling(bot)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
